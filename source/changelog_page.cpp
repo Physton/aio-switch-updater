@@ -16,7 +16,7 @@ ChangelogPage::ChangelogPage() : AppletFrame(true, true)
     changes.push_back("\uE016 Added dialogue box asking about ini files.\n\uE016 Fixed update app link when not connected to the internet.\n\uE016 Minor fixes here and there.");
 
     verTitles.push_back("v1.0.2");
-    changes.push_back("\uE016 Fixed .ini files being handled poorly when installing sigpatches. Now prompts the user if they want to replace hetake_ipl.ini.");
+    changes.push_back("Now prompts the user if they want to replace hetake_ipl.ini.");
 
     verTitles.push_back("v1.0.3");
     changes.push_back("\uE016 Fixed progress bar sometimes being stuck when extracting.");
@@ -91,7 +91,7 @@ ChangelogPage::ChangelogPage() : AppletFrame(true, true)
     changes.push_back("\uE016 Switched to a better way to get links.");
 
     verTitles.push_back("v2.1.1");
-    changes.push_back("\uE016 Added a friendly reminder to reboot for new sigpatches to apply.\n\uE016 Changed the cheatslips cheatsheet view.");
+    changes.push_back("\uE016 Changed the cheatslips cheatsheet view.");
 
     verTitles.push_back("v2.1.2");
     changes.push_back("\uE016 Fixed wronge hekate link.");
@@ -239,6 +239,33 @@ ChangelogPage::ChangelogPage() : AppletFrame(true, true)
 
     verTitles.push_back("v2.19.0");
     changes.push_back("\uE016 Added ability to view games with missing updates.\n\uE016 Updated Japanese localisation (https://github.com/yyoossk).\n\uE016 Updated Chinese localisation (https://github.com/Physton).");
+
+    verTitles.push_back("v2.19.1");
+    changes.push_back("\uE016 Fixed crash when trying to download cheats in applet mode.\n\uE016 Updated Japanese localisation (https://github.com/yyoossk).\n\uE016 Updated Chinese localisation (https://github.com/qazrfv1234).");
+
+    verTitles.push_back("v2.19.2");
+    changes.push_back("\uE016 Fixed Japanese locale.");
+
+    verTitles.push_back("v2.19.3");
+    changes.push_back("\uE016 Fix wrong bid for titles overriden by HBL.\n\uE016 Improve Korean localisation (https://github.com/DDinghoya).\n\uE016 Improve Italian localisation (https://github.com/clamintus).");
+
+    verTitles.push_back("v2.20.0");
+    changes.push_back("\uE016 Significantly increase extraction speed (https://github.com/PoloNX).\n\uE016 Create a \"Custom Downloads\" tab that supports user-provided links for Atmosphère packs as well as regular downloads.");
+
+    verTitles.push_back("v2.20.1");
+    changes.push_back("\uE016 Fix crashes on plane mode.\n\uE016 Account for carriage returns in preserve.txt.");
+
+    verTitles.push_back("v2.21.0");
+    changes.push_back("\uE016 Managing custom download links is now possible directly from the app.\n\uE016 Toggle/untoggle all games in cheats menu->exclude games from receiving cheat updates.");
+
+    verTitles.push_back("v2.21.0");
+    changes.push_back("\uE016 Dialogs now default to not overwriting .ini files");
+
+    verTitles.push_back("v2.21.2");
+    changes.push_back("\uE016 Improved Korean translation.\n\uE016 Be more conservative when checking available space before a download.\n\uE016 Minor fixes.");
+
+    verTitles.push_back("v2.21.3");
+    changes.push_back("\uE016 Added download link for graphic enhancing codes.");
 
 
     for (int i = verTitles.size() - 1; i >= 0; i--) {

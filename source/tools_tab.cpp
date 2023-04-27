@@ -19,13 +19,13 @@
 
 namespace i18n = brls::i18n;
 using namespace i18n::literals;
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 namespace {
     constexpr const char AppVersion[] = APP_VERSION;
 }
 
-ToolsTab::ToolsTab(const std::string& tag, const nlohmann::ordered_json& payloads, bool erista, const nlohmann::json& hideStatus) : brls::List()
+ToolsTab::ToolsTab(const std::string& tag, const nlohmann::ordered_json& payloads, bool erista, const nlohmann::ordered_json& hideStatus) : brls::List()
 {
     if (!tag.empty() && tag != AppVersion) {
         brls::ListItem* updateApp = new brls::ListItem(fmt::format("menus/tools/update_app"_i18n, tag));
@@ -40,7 +40,7 @@ ToolsTab::ToolsTab(const std::string& tag, const nlohmann::ordered_json& payload
             stagedFrame->addStage(
                 new WorkerPage(stagedFrame, "menus/common/extracting"_i18n, []() { util::extractArchive(contentType::app); }));
             stagedFrame->addStage(
-                new ConfirmPage(stagedFrame, "menus/common/all_done"_i18n, true));
+                new ConfirmPage_AppUpdate(stagedFrame, "menus/common/all_done"_i18n));
             brls::Application::pushView(stagedFrame);
         });
         updateApp->setHeight(LISTITEM_HEIGHT);
@@ -129,13 +129,13 @@ ToolsTab::ToolsTab(const std::string& tag, const nlohmann::ordered_json& payload
 
     brls::ListItem* cleanUp = new brls::ListItem("menus/tools/clean_up"_i18n);
     cleanUp->getClickEvent()->subscribe([](brls::View* view) {
-        std::filesystem::remove(AMS_ZIP_PATH);
-        std::filesystem::remove(APP_ZIP_PATH);
-        std::filesystem::remove(CFW_ZIP_PATH);
-        std::filesystem::remove(FW_ZIP_PATH);
-        std::filesystem::remove(CHEATS_ZIP_PATH);
+        std::filesystem::remove(AMS_FILENAME);
+        std::filesystem::remove(APP_FILENAME);
+        std::filesystem::remove(FIRMWARE_FILENAME);
+        std::filesystem::remove(CHEATS_FILENAME);
+        std::filesystem::remove(BOOTLOADER_FILENAME);
         std::filesystem::remove(CHEATS_VERSION);
-        std::filesystem::remove(SIGPATCHES_ZIP_PATH);
+        std::filesystem::remove(CUSTOM_FILENAME);
         fs::removeDir(AMS_DIRECTORY_PATH);
         fs::removeDir(SEPT_DIRECTORY_PATH);
         fs::removeDir(FW_DIRECTORY_PATH);

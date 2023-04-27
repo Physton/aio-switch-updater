@@ -22,7 +22,7 @@ using namespace i18n::literals;
 constexpr const char API_AGENT[] = "HamletDuFromage";
 constexpr int _1MiB = 0x100000;
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 namespace download {
 
@@ -126,7 +126,7 @@ namespace download {
             auto res = curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &dl);
             if (!res) {
                 s64 freeStorage;
-                if (R_SUCCEEDED(fs::getFreeStorageSD(freeStorage)) && dl * 1.1 > freeStorage) {
+                if (R_SUCCEEDED(fs::getFreeStorageSD(freeStorage)) && dl * 2.5 > freeStorage) {
                     return false;
                 }
             }
@@ -197,7 +197,7 @@ namespace download {
 
             s64 freeStorage;
             s64 fileSize = response[0]["s"];
-            if (R_SUCCEEDED(fs::getFreeStorageSD(freeStorage)) && fileSize * 1.1 > freeStorage)
+            if (R_SUCCEEDED(fs::getFreeStorageSD(freeStorage)) && fileSize * 2.5 > freeStorage)
                 return "";
 
             return response[0]["g"];

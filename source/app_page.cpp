@@ -57,6 +57,8 @@ void AppPage::PopulatePage()
     else {
         tid = GetCurrentApplicationId();
         if (R_SUCCEEDED(InitControlData(&controlData)) && R_SUCCEEDED(GetControlData(tid & 0xFFFFFFFFFFFFF000, controlData, controlSize, name))) {
+            listItem = new brls::ListItem(name, "", util::formatApplicationId(tid));
+            listItem->setThumbnail(controlData->icon, sizeof(controlData->icon));
             this->AddListItem(name, tid);
         }
         label = new brls::Label(brls::LabelStyle::SMALL, "menus/common/applet_mode_not_supported"_i18n, true);
@@ -66,7 +68,7 @@ void AppPage::PopulatePage()
 
     brls::Logger::debug("count {}", list->getViewsCount());
 
-    if(!list->getViewsCount()) {
+    if (!list->getViewsCount()) {
         list->addView(new brls::Label(brls::LabelStyle::DESCRIPTION, "menus/common/nothing_to_see"_i18n, true));
     }
 
@@ -100,7 +102,7 @@ void AppPage::CreateDownloadAllButton()
         stagedFrame->addStage(
             new WorkerPage(stagedFrame, "menus/common/extracting"_i18n, []() { util::extractArchive(contentType::cheats); }));
         stagedFrame->addStage(
-            new ConfirmPage(stagedFrame, "menus/common/all_done"_i18n, true));
+            new ConfirmPage_Done(stagedFrame, "menus/common/all_done"_i18n));
         brls::Application::pushView(stagedFrame);
     });
     list->addView(download);
@@ -265,6 +267,22 @@ void AppPage_Exclude::PopulatePage()
         return true;
     });
 
+    this->registerAction("menus/cheats/exclude_all"_i18n, brls::Key::X, [this] {
+        std::set<std::string> exclude;
+        for (const auto& item : items) {
+            exclude.insert(item.second);
+        }
+        extract::writeTitlesToFile(exclude, CHEATS_EXCLUDE);
+        brls::Application::popView();
+        return true;
+    });
+
+    this->registerAction("menus/cheats/exclude_none"_i18n, brls::Key::Y, [this] {
+        extract::writeTitlesToFile({}, CHEATS_EXCLUDE);
+        brls::Application::popView();
+        return true;
+    });
+
     this->setContentView(list);
 }
 
@@ -313,8 +331,7 @@ void AppPage_DownloadedCheats::GetExistingCheatsTids()
 AppPage_OutdatedTitles::AppPage_OutdatedTitles() : AppPage()
 {
     download::getRequest(LOOKUP_TABLE_URL, versions);
-    if(versions.empty())
-    {
+    if (versions.empty()) {
         list->addView(new brls::Label(brls::LabelStyle::DESCRIPTION, "menus/main/links_not_found"_i18n, true));
         this->setContentView(list);
     }

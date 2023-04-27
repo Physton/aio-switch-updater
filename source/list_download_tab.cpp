@@ -34,13 +34,10 @@ ListDownloadTab::ListDownloadTab(const contentType type, const nlohmann::ordered
     }
 
     if (this->type == contentType::bootloaders) {
-        this->setDescription(contentType::payloads);
-        this->createList(contentType::payloads);
-    }
-
-    if (this->type == contentType::sigpatches) {
         this->setDescription(contentType::hekate_ipl);
         this->createList(contentType::hekate_ipl);
+        this->setDescription(contentType::payloads);
+        this->createList(contentType::payloads);
     }
 }
 
@@ -52,8 +49,10 @@ void ListDownloadTab::createList()
 void ListDownloadTab::createList(contentType type)
 {
     std::vector<std::pair<std::string, std::string>> links;
-    if (type == contentType::cheats && this->newCheatsVer != "")
+    if (type == contentType::cheats && this->newCheatsVer != "") {
         links.push_back(std::make_pair(fmt::format("menus/main/get_cheats"_i18n, this->newCheatsVer), CurrentCfw::running_cfw == CFW::sxos ? CHEATS_URL_TITLES : CHEATS_URL_CONTENTS));
+        links.push_back(std::make_pair("menus/main/get_cheats_gfx"_i18n, CurrentCfw::running_cfw == CFW::sxos ? GFX_CHEATS_URL_TITLES : GFX_CHEATS_URL_CONTENTS));
+    }
     else
         links = download::getLinksFromJson(util::getValueFromKey(this->nxlinks, contentTypeNames[(int)type].data()));
 
@@ -99,16 +98,12 @@ void ListDownloadTab::createList(contentType type)
                             stagedFrame->addStage(new DialoguePage_fw(stagedFrame, doneMsg));
                         }
                         else {
-                            stagedFrame->addStage(new ConfirmPage(stagedFrame, doneMsg, true));
+                            stagedFrame->addStage(new ConfirmPage_Done(stagedFrame, doneMsg));
                         }
                         break;
                     }
-                    case contentType::sigpatches:
-                        doneMsg += "\n" + "menus/sigpatches/reboot"_i18n;
-                        stagedFrame->addStage(new ConfirmPage(stagedFrame, doneMsg, true));
-                        break;
                     default:
-                        stagedFrame->addStage(new ConfirmPage(stagedFrame, doneMsg, true));
+                        stagedFrame->addStage(new ConfirmPage_Done(stagedFrame, doneMsg));
                         break;
                 }
                 brls::Application::pushView(stagedFrame);
@@ -141,9 +136,6 @@ void ListDownloadTab::setDescription(contentType type)
     brls::Label* description = new brls::Label(brls::LabelStyle::DESCRIPTION, "", true);
 
     switch (type) {
-        case contentType::sigpatches:
-            description->setText("menus/main/sigpatches_text"_i18n);
-            break;
         case contentType::fw: {
             SetSysFirmwareVersion ver;
             description->setText(fmt::format("{}{}", "menus/main/firmware_text"_i18n, R_SUCCEEDED(setsysGetFirmwareVersion(&ver)) ? ver.display_version : "menus/main/not_found"_i18n));
@@ -181,7 +173,7 @@ void ListDownloadTab::createCheatSlipItem()
         }
         else {
             std::string usr, pwd;
-            //Result rc = swkbdCreate(&kbd, 0);
+            // Result rc = swkbdCreate(&kbd, 0);
             brls::Swkbd::openForText([&usr](std::string text) { usr = text; }, "cheatslips.com e-mail", "", 64, "", 0, "Submit", "cheatslips.com e-mail");
             brls::Swkbd::openForText([&pwd](std::string text) { pwd = text; }, "cheatslips.com password", "", 64, "", 0, "Submit", "cheatslips.com password", true);
             std::string body = "{\"email\":\"" + std::string(usr) + "\",\"password\":\"" + std::string(pwd) + "\"}";
